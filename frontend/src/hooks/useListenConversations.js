@@ -1,0 +1,19 @@
+import { useEffect } from 'react';
+import { useConversationContext } from '../context/ConversationContext';
+import { useSocketContext } from '../context/SocketContext';
+
+const useListenConversation = () => {
+  const { socket } = useSocketContext();
+  const { messages, setMessages, conversations, setConversations } = useConversationContext();
+  useEffect(() => {
+    if (!conversations) getChats();
+    socket?.on('newConversation', (newConversation) => {
+      setConversations([...conversations, newConversation]);
+    });
+    return () => {
+      socket?.off('newConversation');
+    };
+  }, [socket, messages, setMessages, conversations]);
+};
+
+export default useListenConversation;

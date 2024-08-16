@@ -4,8 +4,9 @@ import { io } from '../socket/socket.js';
 
 export const getConversationsForUser = async (req, res) => {
   try {
-    const userId = req.user._id;
-    const conversations = await User.findById(userId).conversations;
+    const { id: userId } = req.params;
+    const user = await User.findById(userId);
+    const conversations = user.conversations;
     const fullConversations = await Conversation.find({ _id: { $in: conversations } })
       .populate('participants', 'username profilePic')
       .populate('messages');

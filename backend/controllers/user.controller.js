@@ -1,4 +1,3 @@
-import Conversation from '../models/conversation.model.js';
 import User from '../models/user.model.js';
 
 export const getAllUsers = async (req, res) => {
@@ -8,34 +7,6 @@ export const getAllUsers = async (req, res) => {
     res.status(200).json(filteredUsers);
   } catch (e) {
     console.log('error in get users for sidebar function', e.message);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
-export const getUsersForSidebar = async (req, res) => {
-  try {
-    const loggedInUserId = req.user._id;
-
-    const conversations = await Conversation.find({
-      participants: { $in: [loggedInUserId] },
-    });
-
-    const userIds = new Set();
-    conversations.forEach((conversation) => {
-      conversation.participants.forEach((participantId) => {
-        if (participantId.toString() !== loggedInUserId.toString()) {
-          userIds.add(participantId);
-        }
-      });
-    });
-
-    const userIdsArray = Array.from(userIds);
-
-    const filteredUsers = await User.find({ _id: { $in: userIdsArray } }).select('-password');
-
-    res.status(200).json(filteredUsers);
-  } catch (e) {
-    console.log('Error in get users for sidebar function', e.message);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

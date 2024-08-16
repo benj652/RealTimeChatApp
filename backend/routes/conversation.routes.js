@@ -7,7 +7,7 @@ import protectRoute from '../middleware/protectRoute.js';
 
 const router = express.Router();
 
-router.get('/getchats', protectRoute, getConversationsForUser);
+router.get('/getchats/:id', protectRoute, getConversationsForUser);
 router.post('/makechat', protectRoute, createGroupChatConversation);
 
 export default router;

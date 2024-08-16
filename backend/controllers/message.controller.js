@@ -7,26 +7,41 @@ export const sendMessage = async (req, res) => {
     const { message, users } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : null;
     const { id: receiverId } = req.params;
+    // console.log(receiverId);
     const senderId = req.user._id;
-    let conversation = await Conversation.findById(receiverId);
-    if (!conversation) {
-      // sending to one user
+    // console.log(senderId, users[0]);
+    let conversation;
+    if (receiverId !== 'undefined') {
+      //   console.log('receiverId', receiverId);
+      conversation = await Conversation.findById(receiverId);
+    } else {
+      // sending to one user and new conversation
+      const newConversationRecieverId = users[0];
+      const reciever = await User.findById(newConversationRecieverId); //prob can make more effiecent
       conversation = await Conversation.create({
-        participants: [senderId, users[0]],
+        title: reciever.fullname,
+        participants: [senderId, newConversationRecieverId],
       });
-
-      await User.findByIdAndUpdate(users[0], {
+      await User.findByIdAndUpdate(newConversationRecieverId, {
         $addToSet: { conversations: conversation._id },
       });
-      const receiverSocketId = getReceiverSocketId(users[0]);
+      await User.findByIdAndUpdate(senderId, {
+        $addToSet: { conversations: conversation._id },
+      });
+      const receiverSocketId = getReceiverSocketId(senderId);
       if (receiverSocketId) {
         io.to(receiverSocketId).emit('newConversation', conversation);
+      }
+
+      const receiverSocketId2 = getReceiverSocketId(newConversationRecieverId);
+      if (receiverSocketId2) {
+        io.to(receiverSocketId2).emit('newConversation', conversation);
       }
     }
 
     const newMessage = new Message({
       senderId,
-      receiverId,
+      receiverId: conversation._id,
       message,
       imageUrl: image,
     });
@@ -37,15 +52,15 @@ export const sendMessage = async (req, res) => {
     // await conversation.save();
     // await newMessage.save();
     await Promise.all([conversation.save(), newMessage.save()]);
-
     for (const user of users) {
       const receiverSocketId = getReceiverSocketId(user);
-      console.log(receiverSocketId);
+      //   console.log(receiverSocketId);
       if (receiverSocketId) {
         io.to(receiverSocketId).emit('newMessage', newMessage);
       }
     }
 
+    conversation = null;
     res.status(201).json(newMessage);
   } catch (e) {
     console.log('Error in message controller', e.message);
@@ -55,14 +70,11 @@ export const sendMessage = async (req, res) => {
 
 export const getMessages = async (req, res) => {
   try {
-    const { id: userToChatId } = req.params;
+    const { id: curConversationId } = req.params;
     const senderId = req.user._id;
-    let conversation = await Conversation.findOne({
-      participants: { $all: [senderId, userToChatId] },
+    let conversation = await Conversation.findById({
+      curConversationId,
     }).populate('messages');
-    if (!conversation) {
-      conversation = await Conversation.findById(userToChatId).populate('messages');
-    }
     if (!conversation) return res.status(200).json([]);
     const messages = conversation.messages;
     res.status(200).json(messages);
