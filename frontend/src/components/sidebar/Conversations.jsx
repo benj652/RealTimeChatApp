@@ -1,8 +1,7 @@
-import { useEffect, useRef } from 'react';
 import { useAuthContext } from '../../context/AuthContext';
 import { useConversationContext } from '../../context/ConversationContext';
+import useGetConversations from '../../hooks/useGetConversations';
 import useListenConversation from '../../hooks/useListenConversations';
-import httpClient from '../../utils/httpClient';
 import Conversation from './Conversation';
 
 const Conversations = () => {
@@ -11,20 +10,7 @@ const Conversations = () => {
   };
   const { authUser } = useAuthContext();
 
-  const apiCallMade = useRef(false);
-  const { setConversations } = useConversationContext();
-  useEffect(() => {
-    if (!apiCallMade.current) {
-      const fetchConversations = async () => {
-        apiCallMade.current = true;
-        const conversations = await httpClient.get(`/api/conversations/getchats/${authUser._id}`);
-        setConversations(conversations.data);
-        // console.log('made api call');
-      };
-
-      fetchConversations();
-    }
-  }, []);
+  const { loading } = useGetConversations();
 
   useListenConversation();
   const { conversations } = useConversationContext();
@@ -44,7 +30,7 @@ const Conversations = () => {
         }
         return null;
       })}
-      {false && <span className="loading loading-spinner mx-auto"></span>}
+      {loading && <span className="loading loading-spinner mx-auto"></span>}
     </div>
   );
 };

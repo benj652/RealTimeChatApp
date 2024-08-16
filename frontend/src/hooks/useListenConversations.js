@@ -4,11 +4,13 @@ import { useSocketContext } from '../context/SocketContext';
 
 const useListenConversation = () => {
   const { socket } = useSocketContext();
-  const { messages, setMessages, conversations, setConversations } = useConversationContext();
+  const { messages, setMessages, conversations, setConversations, setSelectedConversation } =
+    useConversationContext();
   useEffect(() => {
     if (!conversations) getChats();
     socket?.on('newConversation', (newConversation) => {
-      setConversations([...conversations, newConversation]);
+      setConversations([...conversations, newConversation.newConv]);
+      if (newConversation.sender) setSelectedConversation(newConversation.newConv);
     });
     return () => {
       socket?.off('newConversation');

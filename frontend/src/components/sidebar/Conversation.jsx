@@ -3,10 +3,11 @@ import { useConversationContext } from '../../context/ConversationContext';
 import { useSocketContext } from '../../context/SocketContext';
 
 const Conversation = ({ con, lastIndex }) => {
+  //   console.log(con.participants[1]);
   const { onlineUsers } = useSocketContext();
   const { selectedConversation, setSelectedConversation } = useConversationContext();
   const { authUser } = useAuthContext();
-  const isGroupChat = con.participants > 2;
+  const isGroupChat = con.participants.length > 2;
   const isOnline =
     onlineUsers.includes(con.participants[0]._id) &&
     onlineUsers.includes(con.participants[1]._id) &&
@@ -16,6 +17,11 @@ const Conversation = ({ con, lastIndex }) => {
     : con.participants[0]._id === authUser._id
     ? con.participants[1].profilePic
     : con.participants[0].profilePic;
+  const conversationTitle = isGroupChat
+    ? con.title
+    : con.participants[0]._id === authUser._id
+    ? con.participants[1].username
+    : con.participants[0].username;
   const isSelected = selectedConversation?._id === con._id;
   return (
     <>
@@ -31,7 +37,7 @@ const Conversation = ({ con, lastIndex }) => {
         </div>
         <div className="flex flex-col flex-1">
           <div className="flex gap-3 justify-between">
-            <p className="font-bold text-black">{con.title}</p>
+            <p className="font-bold text-black">{conversationTitle}</p>
 
             <span className="text-xl text-black">ඞ</span>
           </div>

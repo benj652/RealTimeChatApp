@@ -8,7 +8,7 @@ import useGetSameChat from '../../hooks/useGetSameChat';
 const SearchInput = () => {
   const [search, setSearch] = useState('');
   const { allUsers } = useGetAllUsers();
-  const { setSelectedConversation } = useConversationContext();
+  const { setMessages, setSelectedConversation } = useConversationContext();
   const { getSameChat } = useGetSameChat();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,6 +23,7 @@ const SearchInput = () => {
       const mutual = await getSameChat({ targetUserId: targetUser._id });
       setSelectedConversation(mutual);
       setSearch('');
+      setMessages([]);
     } else toast.error(`no user with "${search}" found`);
   };
   return (

@@ -17,8 +17,8 @@ const useGetSameChat = () => {
       const targetConversation = conversations.find(
         (conversation) =>
           conversation.participants.length === 2 &&
-          conversation.participants.includes(targetUserId) &&
-          conversation.participants.includes(authUser._id),
+          conversation.participants.some((participant) => participant._id === targetUserId) &&
+          conversation.participants.some((participant) => participant._id === authUser._id),
       );
       return targetConversation ? targetConversation : newConversationObject;
     } catch (e) {
