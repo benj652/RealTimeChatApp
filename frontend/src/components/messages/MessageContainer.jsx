@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useAuthContext } from '../../context/AuthContext';
 import { useConversationContext } from '../../context/ConversationContext';
 import MessageInput from './MessageInput';
 import Messages from './Messages';
@@ -6,6 +7,11 @@ import NoChatSelected from './NoChatSelected';
 
 const MessageContainer = () => {
   const { selectedConversation, setSelectedConversation } = useConversationContext();
+  const { authUser } = useAuthContext();
+  const otherParticipates = selectedConversation?.participants
+    .filter((participant) => participant._id !== authUser._id)
+    .map((participant) => participant.username)
+    .join(', ');
   useEffect(() => {
     return () => setSelectedConversation(null);
   }, [setSelectedConversation]);
@@ -16,8 +22,8 @@ const MessageContainer = () => {
       ) : (
         <>
           <div className="bg-slate-500 px-4 py-2 mb-2">
-            <span className="label-text">To:</span>
-            <span className="label-text">{selectedConversation.username}</span>
+            <span className="label-text">{selectedConversation.title}:</span>
+            <span className="label-text">{otherParticipates}</span>
           </div>
           <Messages />
           <MessageInput />

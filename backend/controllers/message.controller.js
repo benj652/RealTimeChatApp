@@ -19,7 +19,7 @@ export const sendMessage = async (req, res) => {
       const newConversationRecieverId = users[0] === senderId ? users[1] : users[0];
       //   const reciever = await User.findById(newConversationRecieverId); //prob can make more effiecent
       conversation = await Conversation.create({
-        title: 'DM',
+        title: 'Direct Message',
         participants: [senderId, newConversationRecieverId],
       });
       await User.findByIdAndUpdate(newConversationRecieverId, {
