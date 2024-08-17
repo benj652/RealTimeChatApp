@@ -11,9 +11,13 @@ const useListenMessages = () => {
   useEffect(() => {
     socket?.on('newMessage', (newMessage) => {
       newMessage.shouldShake = true;
-      toast.success(`Got new message: ${newMessage.message}`);
-      console.log(newMessage);
-      console.log(selectedConversation);
+      if (newMessage.imageUrl) {
+        toast.success('Got new image!');
+      } else {
+        toast.success(`Got new message: ${newMessage.message}`);
+      }
+      //   console.log(newMessage.imageUrl);
+      //   console.log(selectedConversation);
       if (selectedConversation._id === newMessage.receiverId) {
         setMessages([...messages, newMessage]);
       }

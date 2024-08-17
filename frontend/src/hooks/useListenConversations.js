@@ -9,6 +9,7 @@ const useListenConversation = () => {
   useEffect(() => {
     if (!conversations) getChats();
     socket?.on('newConversation', (newConversation) => {
+      // console.log('new conversation', newConversation);
       setConversations([...conversations, newConversation.newConv]);
       if (newConversation.sender) setSelectedConversation(newConversation.newConv);
     });

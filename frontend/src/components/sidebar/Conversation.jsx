@@ -4,6 +4,7 @@ import { useSocketContext } from '../../context/SocketContext';
 
 const Conversation = ({ con, lastIndex }) => {
   //   console.log(con.participants[1]);
+  console.log(con);
   const { onlineUsers } = useSocketContext();
   const { selectedConversation, setSelectedConversation } = useConversationContext();
   const { authUser } = useAuthContext();
@@ -12,6 +13,7 @@ const Conversation = ({ con, lastIndex }) => {
     onlineUsers.includes(con.participants[0]._id) &&
     onlineUsers.includes(con.participants[1]._id) &&
     !isGroupChat;
+
   const conversationIcon = isGroupChat
     ? null
     : con.participants[0]._id === authUser._id
@@ -30,11 +32,28 @@ const Conversation = ({ con, lastIndex }) => {
         ${isSelected ? 'bg-sky-500 text-white' : ''}`}
         onClick={() => setSelectedConversation(con)}
       >
-        <div className={`avatar ${isOnline ? 'online' : ''}`}>
-          <div className="w-12 rounded-full">
-            <img src={conversationIcon} alt="user avatar" />
+        {isGroupChat ? (
+          <div className="avatar-group -space-x-10">
+            {con.participants.slice(0, 2).map((p) => (
+              <div className="avatar" key={p._id}>
+                <div className="w-12 rounded-full bg-gray-300">
+                  <img src={p.profilePic} alt="user avatar" />
+                </div>
+              </div>
+            ))}
+            <div className="avatar placeholder">
+              <div className="bg-neutral text-neutral-content w-12">
+                <span>+{con.participants.length - 2}</span>
+              </div>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className={`avatar ${isOnline ? 'online' : ''}`}>
+            <div className="w-12 rounded-full">
+              <img src={conversationIcon} alt="user avatar" />
+            </div>
+          </div>
+        )}
         <div className="flex flex-col flex-1">
           <div className="flex gap-3 justify-between">
             <p className="font-bold text-black">{conversationTitle}</p>

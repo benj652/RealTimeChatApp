@@ -18,17 +18,9 @@ const Conversations = () => {
   return (
     <div className="py-2 flex flex-col overflow-auto">
       {conversations?.map((con, idx) => {
-        if (con.participants.length === 2) {
-          const otherUser = findOtherUser(con, authUser._id);
-          return (
-            <Conversation
-              key={otherUser._id}
-              con={con}
-              lastIndex={idx === conversations.length - 1}
-            />
-          );
-        }
-        return null;
+        return (
+          <Conversation key={con._id} con={con} lastIndex={idx === conversations.length - 1} />
+        );
       })}
       {loading && <span className="loading loading-spinner mx-auto"></span>}
     </div>

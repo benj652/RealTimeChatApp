@@ -2,6 +2,7 @@ import React from 'react';
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { useAuthContext } from './context/AuthContext';
+import CreateGroupChatPage from './pages/CreateGroupChatPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
@@ -19,6 +20,10 @@ const Router = () => {
           <Route
             path="/profile/:id"
             element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="creategc"
+            element={authUser ? <CreateGroupChatPage /> : <Navigate to="/login" />}
           />
         </Routes>
         <Toaster />

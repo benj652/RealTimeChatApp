@@ -7,6 +7,7 @@ const useSignup = () => {
   const [loading, setLoading] = useState(false);
   const { setAuthUser } = useAuthContext();
   const signup = async ({ fullname, username, password, confirmPassword }) => {
+    setLoading(true);
     const success = handelInputErrors({ fullname, username, password, confirmPassword });
     if (!success) return;
     try {

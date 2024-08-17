@@ -1,6 +1,6 @@
 import Conversation from '../models/conversation.model.js';
 import User from '../models/user.model.js';
-import { io } from '../socket/socket.js';
+import { getReceiverSocketId, io } from '../socket/socket.js';
 
 export const getConversationsForUser = async (req, res) => {
   try {
@@ -20,22 +20,34 @@ export const getConversationsForUser = async (req, res) => {
 
 export const createGroupChatConversation = async (req, res) => {
   try {
-    const { users } = req.body;
+    const senderId = req.user._id;
+
+    const { title, users } = req.body;
     const newConversation = new Conversation({
+      title,
       participants: users,
     });
+    await newConversation.save();
+
+    const fullConversations = await Conversation.findById(newConversation._id)
+      .populate('participants', 'username profilePic')
+      .populate('messages');
+    console.log(users);
     for (const user of users) {
-      await User.findByIdAndUpdate(user, {
+      await User.findByIdAndUpdate(user._id, {
         $addToSet: { conversations: newConversation._id },
       });
-      const receiverSocketId = getReceiverSocketId(user);
+      const receiverSocketId = getReceiverSocketId(user._id);
+      // console.log(senderId, user._id);
       if (receiverSocketId) {
-        io.to(receiverSocketId).emit('newGroupChat', newConversation._id);
+        io.to(receiverSocketId).emit('newConversation', {
+          newConv: fullConversations,
+          sender: senderId.toString() === user._id,
+        });
       }
     }
 
-    await newConversation.save();
-    res.status(201).json(newConversation);
+    res.status(201).json(fullConversations);
   } catch (e) {
     console.log('error in create group chat function', e.message);
     res.status(500).json({ error: 'Internal server error' });
