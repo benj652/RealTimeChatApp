@@ -11,10 +11,10 @@ const useSendMessage = () => {
     try {
       let res = null;
       if (message instanceof File) {
-        const formdata = new FormData();
-        formdata.append('image', message);
-
-        res = await httpClient.post(`/api/messages/send/${selectedConversation._id}`, formdata, {
+        const formData = new FormData();
+        formData.append('image', message);
+        formData.append('users', JSON.stringify(selectedConversation.participants));
+        res = await httpClient.post(`/api/messages/send/${selectedConversation._id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -38,6 +38,7 @@ const useSendMessage = () => {
       if (data.error) throw new Error(data.error);
       console.log(data);
       //   console.log(selectedConversation);
+      res = null;
       setMessages([...messages, data]);
     } catch (e) {
       toast.error(e.messages);

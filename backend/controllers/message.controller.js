@@ -4,9 +4,14 @@ import User from '../models/user.model.js';
 import { getReceiverSocketId, io } from '../socket/socket.js';
 export const sendMessage = async (req, res) => {
   try {
-    const { message, users } = req.body;
+    let { message, users } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : null;
     const { id: receiverId } = req.params;
+    // console.log('raw users', users, 'req.body.users', req.body.users);
+    if (typeof users === 'string') {
+      //   console.log('string');
+      users = JSON.parse(users);
+    }
     // console.log(receiverId);
     const senderId = req.user._id;
     // console.log(senderId, users[0]);
@@ -75,7 +80,8 @@ export const sendMessage = async (req, res) => {
         }
       }
     }
-
+    users = null;
+    message = null;
     conversation = null;
     res.status(201).json(newMessage);
   } catch (e) {
