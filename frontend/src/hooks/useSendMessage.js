@@ -36,7 +36,7 @@ const useSendMessage = () => {
       }
       const data = await res.data;
       if (data.error) throw new Error(data.error);
-      console.log(data);
+      // console.log(data);
       //   console.log(selectedConversation);
       res = null;
       setMessages([...messages, data]);

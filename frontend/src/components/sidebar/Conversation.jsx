@@ -4,7 +4,7 @@ import { useSocketContext } from '../../context/SocketContext';
 
 const Conversation = ({ con, lastIndex }) => {
   //   console.log(con.participants[1]);
-  console.log(con);
+  // console.log(con);
   const { onlineUsers } = useSocketContext();
   const { selectedConversation, setSelectedConversation } = useConversationContext();
   const { authUser } = useAuthContext();

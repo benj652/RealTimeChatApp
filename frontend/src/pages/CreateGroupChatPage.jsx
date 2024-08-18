@@ -21,14 +21,18 @@ const CreateGroupChatPage = () => {
     if (search.length < 3) {
       return toast.error('Search term must be at least 3 characters long');
     }
-    const targetUser = allUsers.find((c) =>
-      c.username.toLowerCase().includes(search.toLowerCase()),
+    const targetUser = allUsers.find(
+      (user) =>
+        user.username.toLowerCase().includes(search.toLowerCase()) ||
+        user.fullname.toLowerCase().includes(search.toLowerCase()),
     );
     if (!targetUser) return toast.error(`no user with "${search}" found`);
-    if (curUsers.includes(targetUser))
+    else if (curUsers.includes(targetUser))
       return toast.error(`already selected user "${targetUser.username}"`);
-    setCurUsers((prev) => [...prev, targetUser]);
-    setSearch('');
+    else {
+      setCurUsers((prev) => [...prev, targetUser]);
+      setSearch('');
+    }
   };
   const handleCreate = async (e) => {
     e.preventDefault();

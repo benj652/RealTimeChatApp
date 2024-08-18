@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useConversationContext } from '../context/ConversationContext';
 import { useSocketContext } from '../context/SocketContext';
 
@@ -12,6 +13,7 @@ const useListenConversation = () => {
       // console.log('new conversation', newConversation);
       setConversations([...conversations, newConversation.newConv]);
       if (newConversation.sender) setSelectedConversation(newConversation.newConv);
+      else toast.success(`Got new conversation: ${newConversation.newConv.title}`);
     });
     return () => {
       socket?.off('newConversation');

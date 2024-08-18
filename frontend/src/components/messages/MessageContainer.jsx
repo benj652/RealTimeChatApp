@@ -22,7 +22,9 @@ const MessageContainer = () => {
       ) : (
         <>
           <div className="bg-slate-500 px-4 py-2 mb-2">
-            <span className="label-text">{selectedConversation.title}:</span>
+            <span className="label-text">
+              {selectedConversation.title ? selectedConversation.title : 'New Chat'}:
+            </span>
             <span className="label-text">{otherParticipates}</span>
           </div>
           <Messages />

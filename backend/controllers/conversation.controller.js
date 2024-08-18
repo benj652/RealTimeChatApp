@@ -42,7 +42,7 @@ export const createGroupChatConversation = async (req, res) => {
       if (receiverSocketId) {
         io.to(receiverSocketId).emit('newConversation', {
           newConv: fullConversations,
-          sender: senderId.toString() === user._id,
+          sender: senderId.equals(user._id),
         });
       }
     }

@@ -16,8 +16,10 @@ const SearchInput = () => {
     if (search.length < 3) {
       return toast.error('Search term must be at least 3 characters long');
     }
-    const targetUser = allUsers.find((c) =>
-      c.fullname.toLowerCase().includes(search.toLowerCase()),
+    const targetUser = allUsers.find(
+      (user) =>
+        user.username.toLowerCase().includes(search.toLowerCase()) ||
+        user.fullname.toLowerCase().includes(search.toLowerCase()),
     );
     if (targetUser) {
       const mutual = await getSameChat({ targetUserId: targetUser._id });

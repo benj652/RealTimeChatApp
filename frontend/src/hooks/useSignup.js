@@ -7,10 +7,10 @@ const useSignup = () => {
   const [loading, setLoading] = useState(false);
   const { setAuthUser } = useAuthContext();
   const signup = async ({ fullname, username, password, confirmPassword }) => {
-    setLoading(true);
     const success = handelInputErrors({ fullname, username, password, confirmPassword });
     if (!success) return;
     try {
+      setLoading(true);
       const res = await httpClient.post(
         '/api/auth/signup',
         {
@@ -32,7 +32,7 @@ const useSignup = () => {
       localStorage.setItem('chat-user', JSON.stringify(data));
       setAuthUser(data);
     } catch (e) {
-      toast.error(e.message);
+      toast.error(e.response.data.error);
     } finally {
       setLoading(false);
     }

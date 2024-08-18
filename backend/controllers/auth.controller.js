@@ -15,6 +15,11 @@ export const signup = async (req, res) => {
       return res.status(400).json({ error: 'Username already exists' });
     }
 
+    const userFullname = await User.findOne({ fullname });
+    if (userFullname) {
+      return res.status(400).json({ error: 'user already has that name' });
+    }
+
     const profilePic = `https://robohash.org/${fullname}`; //"https://avatar.iran.liara.run/public";
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
