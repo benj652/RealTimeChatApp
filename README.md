@@ -15,7 +15,6 @@ To get started with RTChatapp, follow these steps:
    MONGO_DB_URI=<YOUR_DATABASE_URI>
    JWT_SECRET=<YOUR_JWT_SECRET>
    PORT=<YOUR_PORT>
-   NODE_ENV=<YOUR_NODE_ENV>
 7. In the root directory of the project, start the server: `npm run server`
 8. In the root directory of the project, start the client: `npm run client`
 9. Open your browser and navigate to `http://localhost:3000`
